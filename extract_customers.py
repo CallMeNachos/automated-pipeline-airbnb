@@ -40,8 +40,8 @@ def customer_data(json_file, bucket: str) -> pd.DataFrame:
 			secret_key=secret_key,
 			secure=False
 			)
-	except:
-		raise
+	except ConnectionError as e:
+		logger.error("Can't connect to Minio")
 
 	df = pd.DataFrame()
 	if client.bucket_exists(bucket):
@@ -60,13 +60,9 @@ def customer_data(json_file, bucket: str) -> pd.DataFrame:
 				response.release_conn()
 
 			df = pd.concat([df, result])
+
 	else:
 		logger.error(f"Bucket [{bucket}] does not exist!")
+
+	logger.info(f"customer data is now loaded")
 	return df
-
-
-if __name__ == '__main__':
-	df = customer_data("/user_credentials.json", "companies")
-	abspath = os.path.dirname(os.path.abspath(__file__))
-	csv_file = abspath + "/data/customer_data.csv"
-	df.to_csv(csv_file, index=False)
