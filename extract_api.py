@@ -22,7 +22,7 @@ def fetch_records(url: str, offset: int) -> Iterator[dict]:
 			print(f"URL {url_page} is wrong")
 
 		result = json.loads(response)['results']
-		print(f"rows processed: {i}/{offset}")
+		print(f"API rows processed: {i}/{offset}")
 		yield result[0]
 		i += 1
 
@@ -35,10 +35,9 @@ def create_dataframe(url: str, offset) -> pd.DataFrame:
 	for i, record in enumerate(fetch_records(url, offset)):
 		new_record = pd.json_normalize(record)
 		df = pd.concat([df, new_record])
-		df = df.reset_index()
-		df = df.rename(
-			columns={
-				'coordinates.lon': 'lon',
-				'coordinates.lat': 'lat'})
-	return df
 
+	df = df.rename(
+		columns={
+			'coordinates.lon': 'lon',
+			'coordinates.lat': 'lat'})
+	return df
