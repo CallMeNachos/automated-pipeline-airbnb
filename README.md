@@ -1,4 +1,4 @@
-# automated-pipeline-airbnb
+# Exercise MiniIO
 
 ## Installation
 
